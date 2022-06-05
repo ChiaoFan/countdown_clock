@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import Fireworks from './fireworks.gif';
 
 const Button = styled.button`
-    background: ${props => props.primary ? "palevioletred" : "white"};
-    color: ${props => props.primary ? "white" : "palevioletred"};
+    background: ${props => props.primary || props.selected ? "palevioletred" : "white"};
+    color: ${props => props.primary || props.selected ? "white" : "palevioletred"};
     cursor: pointer;
     font-size: 14px;
     margin: 10px;
@@ -19,7 +19,7 @@ const Input = styled.input`
     color: black;
     background: white;
     border-radius: 3px;
-    
+    width: 150px;
 `;
 
 const CountdownClock = React.memo((props) => {
@@ -68,16 +68,16 @@ const CountdownClock = React.memo((props) => {
     return (
         <Fragment>
           <label>
-            <Input id="minutes" type="number" value={minutesInput} onChange={e => setMinutesInput(e.target.value)}/>
+            <Input min="0" id="minutes" type="number" value={minutesInput} onChange={e => setMinutesInput(e.target.value)}/>
             Minutes
           </label>
           <label>
-            <Input id="seconds" type="number" value={secondsInput} onChange={e => setSecondsInput(e.target.value)}/>
+            <Input min="0" id="seconds" type="number" value={secondsInput} onChange={e => setSecondsInput(e.target.value)}/>
             Seconds
           </label>
         <div>
           <Button primary onClick={startEventHandler}>START</Button>
-          <Button onClick={pauseEventHandler}>PAUSE / RESUME</Button>
+          <Button selected={!startTimer && countdownTimeInSecond} onClick={pauseEventHandler}>PAUSE / RESUME</Button>
           <Button onClick={resetEventHandler}>RESET</Button>
           <h1 data-testid="running-clock">{Math.floor(countdownTimeInSecond / 60).toString().padStart(2, '0')} : {(countdownTimeInSecond % 60).toString().padStart(2, '0')}</h1>
         </div>
