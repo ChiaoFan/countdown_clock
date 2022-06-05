@@ -1,4 +1,26 @@
 import React, { Fragment, useState, useEffect } from 'react';
+import styled from 'styled-components';
+import Fireworks from './fireworks.gif';
+
+const Button = styled.button`
+    background: ${props => props.primary ? "palevioletred" : "white"};
+    color: ${props => props.primary ? "white" : "palevioletred"};
+    cursor: pointer;
+    font-size: 14px;
+    margin: 10px;
+    padding: 5px;
+    border: 2px solid palevioletred;
+    border-radius: 3px;
+`;
+
+const Input = styled.input`
+    padding: 5px;
+    margin: 5px;
+    color: black;
+    background: white;
+    border-radius: 3px;
+    
+`;
 
 const CountdownClock = React.memo((props) => {
     const [minutesInput, setMinutesInput] = useState(0);
@@ -8,7 +30,6 @@ const CountdownClock = React.memo((props) => {
 
     console.log(countdownTimeInSecond);
     
-
     useEffect(() => {
         if(startTimer){
           const interval = setInterval(()=> {
@@ -23,8 +44,12 @@ const CountdownClock = React.memo((props) => {
 
     const startEventHandler = (event) => {
         event.preventDefault();
-        setCountDownTimeInSecond(parseInt(minutesInput) * 60 + parseInt(secondsInput));
-        setStartTimer(true);
+        if(minutesInput || secondsInput){
+            setCountDownTimeInSecond(parseInt(minutesInput) * 60 + parseInt(secondsInput));
+            setStartTimer(true);
+        }
+        
+
     }
 
     const pauseEventHandler = (event) => {
@@ -43,20 +68,22 @@ const CountdownClock = React.memo((props) => {
     return (
         <Fragment>
           <label>
-            <input id="minutes" type="number" value={minutesInput} onChange={e => setMinutesInput(e.target.value)}/>
+            <Input id="minutes" type="number" value={minutesInput} onChange={e => setMinutesInput(e.target.value)}/>
             Minutes
           </label>
           <label>
-            <input id="seconds" type="number" value={secondsInput} onChange={e => setSecondsInput(e.target.value)}/>
+            <Input id="seconds" type="number" value={secondsInput} onChange={e => setSecondsInput(e.target.value)}/>
             Seconds
           </label>
-    
-          <button onClick={startEventHandler}>START</button>
-          <button onClick={pauseEventHandler}>PAUSE / RESUME</button>
-          <button onClick={resetEventHandler}>RESET</button>
+        <div>
+          <Button primary onClick={startEventHandler}>START</Button>
+          <Button onClick={pauseEventHandler}>PAUSE / RESUME</Button>
+          <Button onClick={resetEventHandler}>RESET</Button>
           <h1 data-testid="running-clock">{Math.floor(countdownTimeInSecond / 60).toString().padStart(2, '0')} : {(countdownTimeInSecond % 60).toString().padStart(2, '0')}</h1>
-          
+        </div>
+         {countdownTimeInSecond === 0 && startTimer && <img src={Fireworks} alt="fireworks"/>}
         </Fragment>
+      
       );
 });
 
